@@ -235,7 +235,7 @@ The response (status code 200) will be:
     },
     "sent_at": "2016-04-26T15:29:37.230976+00:00",
     "id": "f163deaf-2d3f-4ec6-98fc-f23fa511518f",
-    "content_char_count": 490,
+    "billable_units": 1,
     "service": "5cf87313-fddd-4482-a2ea-48e37320efd1",
     "reference": None,
     "sent_by": "mmg",
@@ -272,7 +272,7 @@ The response (status code 200) will be:
     "updated_at": "2016-04-26T15:30:50.853844+00:00",
     "sent_at": "2016-04-26T15:30:50.383634+00:00",
     "id": "04ae9bdc-92aa-4d6c-a0da-48587c03d4c7",
-    "content_char_count": 446,
+    "billable_units": 1,
     "service": "5cf87313-fddd-4482-a2ea-48e37320efd1",
     "reference": None,
     "sent_by": "mmg"
@@ -293,7 +293,7 @@ The response (status code 200) will be:
     "updated_at": "2016-04-26T15:29:38.724808+00:00",
     "sent_at": "2016-04-26T15:29:37.230976+00:00",
     "id": "f163deaf-2d3f-4ec6-98fc-f23fa511518f",
-    "content_char_count": 490,
+    "billable_units": 1,
     "service": "5cf87313-fddd-4482-a2ea-48e37320efd1",
     "reference": None,
     "sent_by": "mmg"
@@ -324,7 +324,7 @@ where:
     * `id` is the job ID
     * `original_file_name` is the name of the .csv file, if used
 * `id` is the unique identifier for the process of sending and retrieving one or more notifications
-* `content_char_count` indicates the full character count of the text notification, including placeholders (populated for text notifications only)
+* `billable_units` indicates the number of sms sent for this notification. 0 for emails.
 * `service` is your Service ID
 * `reference` is used in the Notifications API so you can ignore it (populated for email notifications only)
 * `sent_by` is the name of the provider
