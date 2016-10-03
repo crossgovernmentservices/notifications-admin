@@ -72,6 +72,15 @@ class Development(Config):
     SESSION_PROTECTION = None
     CSV_UPLOAD_BUCKET_NAME = 'development-notifications-csv-upload'
 
+    OIDC_PROVIDERS = {
+        'dex': {
+            'discovery_url': os.environ.get('OIDC_ISSUER'),
+            'client_id': os.environ.get('OIDC_CLIENT_ID'),
+            'client_secret': os.environ.get('OIDC_CLIENT_SECRET'),
+            'redirect_uri': None
+        }
+    }
+
 
 class Test(Development):
     DEBUG = True

@@ -26,14 +26,16 @@ from functools import partial
 from monotonic import monotonic
 from notifications_python_client.errors import HTTPError
 from notifications_utils import logging
-from notifications_utils.recipients import validate_phone_number, InvalidPhoneError
+from notifications_utils.recipients import (
+    validate_phone_number,
+    InvalidPhoneError)
 from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.javascript import JavascriptLexer
 from werkzeug.exceptions import abort
 from werkzeug.local import LocalProxy
 
-import app.proxy_fix
+from app import proxy_fix
 from app.asset_fingerprinter import AssetFingerprinter
 from app.its_dangerous_session import ItsdangerousSessionInterface
 from app.notify_client.service_api_client import ServiceAPIClient
@@ -42,11 +44,14 @@ from app.notify_client.invite_api_client import InviteApiClient
 from app.notify_client.job_api_client import JobApiClient
 from app.notify_client.notification_api_client import NotificationApiClient
 from app.notify_client.status_api_client import StatusApiClient
-from app.notify_client.template_statistics_api_client import TemplateStatisticsApiClient
+from app.notify_client.template_statistics_api_client import (
+    TemplateStatisticsApiClient,)
 from app.notify_client.user_api_client import UserApiClient
 from app.notify_client.events_api_client import EventsApiClient
 from app.notify_client.provider_client import ProviderClient
 from app.notify_client.organisations_client import OrganisationsClient
+
+from lib.oidc import OIDC
 
 login_manager = LoginManager()
 csrf = CsrfProtect()
@@ -66,6 +71,8 @@ asset_fingerprinter = AssetFingerprinter()
 
 # The current service attached to the request stack.
 current_service = LocalProxy(partial(_lookup_req_object, 'service'))
+
+oidc = OIDC()
 
 
 def create_app():
@@ -94,6 +101,8 @@ def create_app():
     login_manager.init_app(application)
     login_manager.login_view = 'main.sign_in'
     login_manager.login_message_category = 'default'
+
+    oidc.init_app(application)
 
     from app.main import main as main_blueprint
     application.register_blueprint(main_blueprint)
@@ -195,7 +204,8 @@ def linkable_name(value):
 
 
 def syntax_highlight_json(code):
-    return Markup(highlight(code, JavascriptLexer(), HtmlFormatter(noclasses=True)))
+    return Markup(
+        highlight(code, JavascriptLexer(), HtmlFormatter(noclasses=True)))
 
 
 def gmt_timezones(date):
@@ -334,19 +344,24 @@ def load_user(user_id):
 def load_service_before_request():
     if '/static/' in request.url:
         return
-    service_id = request.view_args.get('service_id', session.get('service_id')) if request.view_args \
-        else session.get('service_id')
+
+    service_id = session.get('service_id')
+    if request.view_args:
+        service_id = request.view_args.get('service_id', service_id)
+
     from flask.globals import _request_ctx_stack
     if _request_ctx_stack.top is not None:
-        setattr(
-            _request_ctx_stack.top,
-            'service',
-            service_api_client.get_service(service_id)['data'] if service_id else None)
+        service_data = None
+        if service_id:
+            service_data = service_api_client.get_service(service_id)['data']
+        setattr(_request_ctx_stack.top, 'service', service_data)
 
 
 def save_service_after_request(response):
     # Only save the current session if the request is 200
-    service_id = request.view_args.get('service_id', None) if request.view_args else None
+    service_id = None
+    if request.view_args:
+        service_id = request.view_args.get('service_id')
     if response.status_code == 200 and service_id:
         session['service_id'] = service_id
     return response
@@ -373,16 +388,17 @@ def useful_headers_after_request(response):
 
 def register_errorhandlers(application):
     def _error_response(error_code):
-        resp = make_response(render_template("error/{0}.html".format(error_code)), error_code)
+        resp = make_response(
+            render_template("error/{0}.html".format(error_code)), error_code)
         return useful_headers_after_request(resp)
 
     @application.errorhandler(HTTPError)
     def render_http_error(error):
-        application.logger.error("API {} failed with status {} message {}".format(
-            error.response.url if error.response else 'unknown',
-            error.status_code,
-            error.message
-        ))
+        application.logger.error(
+            "API {} failed with status {} message {}".format(
+                error.response.url if error.response else 'unknown',
+                error.status_code,
+                error.message))
         error_code = error.status_code
         if error_code not in [401, 404, 403, 500]:
             error_code = 500

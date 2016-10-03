@@ -108,7 +108,7 @@ class RegisterUserForm(Form):
                        validators=[DataRequired(message='Can’t be empty')])
     email_address = email_address()
     mobile_number = mobile_number()
-    password = password()
+    # password = password()
 
 
 class RegisterUserFromInviteForm(Form):

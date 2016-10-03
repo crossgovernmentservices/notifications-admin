@@ -2,90 +2,175 @@ from datetime import (
     datetime,
     timedelta
 )
+from functools import wraps
 
 from flask import (
-    render_template,
-    redirect,
-    session,
     abort,
-    url_for,
-    flash
+    current_app,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for
 )
+from flask_login import current_user, login_fresh
 
-from flask.ext.login import current_user
-
+from app import user_api_client
 from app.main import main
-
-from app.main.forms import (
-    RegisterUserForm,
-    RegisterUserFromInviteForm
+from app.main.forms import RegisterUserForm
+from app.main.views.sign_in import (
+    accept_invitation,
+    has_invitation,
+    is_invitee,
+    redirect_to_services,
+    set_next_url
 )
+from app.main.views.verify import two_factor_verification_enabled
 
-from app import (
-    user_api_client,
-    invite_api_client
-)
+
+def require_authenticated_user(fn):
+
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
+
+        if 'user_info' in session:
+            return fn(*args, **kwargs)
+
+        if not current_user.is_authenticated:
+            set_next_url(request.full_path)
+            return current_app.login_manager.unauthorized()
+
+        if not login_fresh():
+            set_next_url(request.full_path)
+            return current_app.login_manager.needs_refresh()
+
+        return fn(*args, **kwargs)
+
+    return wrapped
 
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
-    if current_user and current_user.is_authenticated:
-        return redirect(url_for('main.choose_service'))
 
+    if current_user.is_authenticated:
+        return redirect_to_services()
+
+    if registration_form_submitted():
+        user = register_user()
+        add_user_to_session(user)
+
+        if two_factor_verification_enabled():
+            send_verify_code(user)
+
+        return redirect(url_for('main.verify'))
+
+    if 'user_info' not in session:
+        set_next_url(request.full_path)
+        return redirect(url_for('main.sign_in'))
+
+    else:
+        user_info = session['user_info']
+        current_user.name = user_info.get('name')
+        current_user.email_address = user_info.get('email')
+        current_user.mobile_number = user_info.get('mobile')
+
+    return registration_form()
+
+
+def registration_form_submitted():
     form = RegisterUserForm()
-    if form.validate_on_submit():
-        _do_registration(form, send_sms=False)
-        return redirect(url_for('main.registration_continue'))
+    if request.method.upper() == 'POST':
 
+        if not form.validate():
+            return False
+
+        current_user.name = form.name.data
+        current_user.email_address = form.email_address.data
+        current_user.mobile_number = form.mobile_number.data
+        return True
+
+
+def registration_form():
+    form = RegisterUserForm()
+
+    form.name.data = getattr(current_user, 'name', None)
+
+    email = getattr(current_user, 'email_address', None)
+    if email:
+        form.email_address.data = email
+        form.email_address.disabled = ''
+
+    form.mobile_number.data = getattr(current_user, 'mobile_number', None)
+    # del form.password
     return render_template('views/register.html', form=form)
 
 
 @main.route('/register-from-invite', methods=['GET', 'POST'])
+@require_authenticated_user
 def register_from_invite():
-    form = RegisterUserFromInviteForm()
-    invited_user = session.get('invited_user')
-    if not invited_user:
+
+    if not has_invitation():
         abort(404)
 
-    if form.validate_on_submit():
-        if form.service.data != invited_user['service'] or form.email_address.data != invited_user['email_address']:
-            abort(400)
-        _do_registration(form, send_email=False)
-        invite_api_client.accept_invite(invited_user['service'], invited_user['id'])
-        return redirect(url_for('main.verify'))
+    if not is_invitee(current_user):
+        abort(400)
 
-    form.service.data = invited_user['service']
-    form.email_address.data = invited_user['email_address']
+    if not user_already_registered():
+        register_user()
+        send_verify_code()
 
-    return render_template('views/register-from-invite.html', email_address=invited_user['email_address'], form=form)
+    add_user_to_session()
+    accept_invitation()
+
+    return redirect(url_for('main.verify'))
 
 
-def _do_registration(form, service=None, send_sms=True, send_email=True):
-    if user_api_client.is_email_unique(form.email_address.data):
-        user = user_api_client.register_user(form.name.data,
-                                             form.email_address.data,
-                                             form.mobile_number.data,
-                                             form.password.data)
+def default_current_user(fn):
 
-        # TODO possibly there should be some exception handling
-        # for sending sms and email codes.
-        # How do we report to the user there is a problem with
-        # sending codes apart from service unavailable?
-        # at the moment i believe http 500 is fine.
+    def wrapper(user=None, *args, **kwargs):
+        if user is None:
+            user = current_user
 
-        if send_email:
-            user_api_client.send_verify_email(user.id, user.email_address)
+        return fn(user, *args, **kwargs)
 
-        if send_sms:
-            user_api_client.send_verify_code(user.id, 'sms', user.mobile_number)
-        session['expiry_date'] = str(datetime.utcnow() + timedelta(hours=1))
-        session['user_details'] = {"email": user.email_address, "id": user.id}
-    else:
-        if send_email:
-            user = user_api_client.get_user_by_email(form.email_address.data)
-            user_api_client.send_already_registered_email(user.id, user.email_address)
-        session['expiry_date'] = str(datetime.utcnow() + timedelta(hours=1))
-        session['user_details'] = {"email": user.email_address, "id": user.id}
+    return wrapper
+
+
+@default_current_user
+def user_already_registered(user):
+    return user_api_client.is_email_unique(user.email_address)
+
+
+@default_current_user
+def add_user_to_session(user):
+    session.update({
+        'user_details': {"email": user.email_address, "id": user.id},
+        'expiry_date': str(datetime.utcnow() + timedelta(hours=1))
+    })
+
+
+@default_current_user
+def register_user(user):
+    return user_api_client.register_user(
+        user.name,
+        user.email_address,
+        user.mobile_number,
+        'password')
+
+
+@default_current_user
+def send_verify_email(user):
+    user_api_client.send_verify_email(user.id, user.email_address)
+
+
+@default_current_user
+def send_verify_code(user):
+    user_api_client.send_verify_code(user.id, 'sms', user.mobile_number)
+
+
+@default_current_user
+def send_already_registered_email(user):
+    user_api_client.send_already_registered_email(user.id, user.email_address)
 
 
 @main.route('/registration-continue')
