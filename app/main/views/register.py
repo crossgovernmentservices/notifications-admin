@@ -93,16 +93,23 @@ def registration_form_submitted():
 def registration_form():
     form = RegisterUserForm()
 
-    form.name.data = getattr(current_user, 'name', None)
+    prepopulate(form.name, user_attr('name'))
+    prepopulate(form.email_address, user_attr('email_address'))
+    prepopulate(form.mobile_number, user_attr('mobile_number'))
 
-    email = getattr(current_user, 'email_address', None)
-    if email:
-        form.email_address.data = email
-        form.email_address.disabled = ''
-
-    form.mobile_number.data = getattr(current_user, 'mobile_number', None)
     # del form.password
+
     return render_template('views/register.html', form=form)
+
+
+def prepopulate(field, value):
+    if value:
+        field.data = value
+        field.disabled = ''
+
+
+def user_attr(attr):
+    return getattr(current_user, attr, None)
 
 
 @main.route('/register-from-invite', methods=['GET', 'POST'])
