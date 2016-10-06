@@ -16,6 +16,7 @@ pyexcel-xls==0.1.0
 pyexcel-xlsx==0.1.0
 pyexcel-ods3==0.1.1
 pytz==2016.4
+python-jose==1.3.2
 
 git+https://github.com/alphagov/notifications-python-client.git@1.3.0#egg=notifications-python-client==1.3.0
 
