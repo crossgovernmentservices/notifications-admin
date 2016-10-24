@@ -14,7 +14,7 @@ Create an account – GOV.UK Notify
     <form method="post" autocomplete="nope">
       {{ textbox(form.name, width='3-4') }}
       {{ textbox(form.email_address, hint="Must be from a central government organisation", width='3-4', safe_error_message=True, readonly=form.email_address.disabled) }}
-      {{ textbox(form.mobile_number, width='3-4', hint='Used to send test messages while setting up your service') }}
+      {{ textbox(form.mobile_number, width='3-4', hint='Used for test messages while setting up your service. May also be used to verify your identity during future logins.') }}
       {# {{ textbox(form.password, hint="At least 10 characters", width='3-4') }} #}
       {{ page_footer("Continue") }}
     </form>
