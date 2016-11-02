@@ -8,6 +8,7 @@ from app.main.views import (
     ags_sign_in,
     sign_out,
     register,
+    ags_register,
     two_factor,
     verify,
     send,

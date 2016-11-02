@@ -18,6 +18,9 @@ from app.main.views.two_factor import _is_safe_redirect_url
 @main.route('/ags-sign-in')
 def ags_sign_in():
 
+    if not feature_switch_active():
+        return redirect(url_for('main.sign_in'))
+
     auth_data = request.environ.get('auth_data')
 
     if auth_data is None:
@@ -27,9 +30,8 @@ def ags_sign_in():
     user = get_user(auth_data['id_token']['email'])
 
     if not user:
-        flash('You do not have an account, please register', 'error')
         session['auth_data'] = serialize_auth_data(auth_data)
-        return redirect(url_for('main.register'))
+        return redirect(url_for('main.ags_register'))
 
     if has_invitation():
 
@@ -52,6 +54,10 @@ def accept_invitation():
     invite_api_client.accept_invite(
         session['invited_user']['service'],
         session['invited_user']['id'])
+
+
+def feature_switch_active():
+    return request.cookies.get('ags_feature_switch_active') == '1'
 
 
 def get_services(user):
