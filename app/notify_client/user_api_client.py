@@ -5,6 +5,7 @@ from app.notify_client.models import User
 
 
 class UserApiClient(BaseAPIClient):
+
     def __init__(self):
         super().__init__("a", "b", "c")
 

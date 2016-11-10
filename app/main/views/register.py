@@ -99,7 +99,8 @@ def registration_form():
 
     # del form.password
 
-    return render_template('views/register.html', form=form)
+    return render_template('views/register_completion.html', form=form)
+    # return render_template('views/register.html', form=form)
 
 
 def prepopulate(field, value):

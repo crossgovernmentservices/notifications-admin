@@ -30,8 +30,10 @@ def oidc_callback():
     user = get_user(user_info['email'])
 
     if not user:
-        flash(u'You do not have an account, please register', 'error')
+        # flash(u'You do not have an account, please register', 'error')
+        # flash(u'You do not have an account, please register', 'default')
         session['user_info'] = user_info
+        # return redirect(url_for('main.register_completion'))
         return redirect(url_for('main.register'))
 
     if has_invitation():
