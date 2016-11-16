@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+
+import argparse
+
+from lib.govuk_assets import install_govuk_assets
+
+
+def main():
+    args = get_args()
+    return install_govuk_assets(args.app_dir, args.clean)
+
+
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--app-dir', default='app', help="""
+        Relative path to app module""".strip())
+    parser.add_argument('--clean', action='store_true', help="""
+        Remove installed files""".strip())
+
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    import sys
+    sys.exit(main())
