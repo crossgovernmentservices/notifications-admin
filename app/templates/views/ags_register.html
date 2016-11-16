@@ -1,70 +1,47 @@
-{% extends "withoutnav_template.html" %}
-{% from "components/page-footer.html" import page_footer %}
+{% extends "layout.html" %}
 
-{% macro textbox(
-  field,
-  label=None,
-  hint=False,
-  highlight_tags=False,
-  autofocus=False,
-  help_link=None,
-  help_link_text=None,
-  width='2-3',
-  suffix=None,
-  safe_error_message=False,
-  rows=8
-) %}
-  <div class="form-group{% if field.errors %} error{% endif %}" {% if autofocus %}data-module="autofocus"{% endif %}>
-    <label class="form-label" for="{{ field.name }}">
-      {% if label %}
-        {{ label }}
-      {% else %}
-        {{ field.label }}
-      {% endif %}
-      {% if hint %}
-        <span class="form-hint">
-          {{ hint }}
-        </span>
-      {% endif %}
-      {% if field.errors %}
-        <span class="error-message">
-          {% if not safe_error_message %}{{ field.errors[0] }}{% else %}{{ field.errors[0]|safe }}{% endif %}
-        </span>
-      {% endif %}
-    </label>
-    {{ field(**dict(kwargs, **{
-      'class': 'form-control form-control-{} textbox-highlight-textbox'.format(width) if highlight_tags else 'form-control form-control-{} {}'.format(width, 'textbox-right-aligned' if suffix else ''),
-      'data-module': 'highlight-tags' if highlight_tags else '',
-      'rows': rows|string
-    })) }}
-    {% if suffix %}
-      <span>{{ suffix }}</span>
-    {% endif %}
-    {% if help_link and help_link_text %}
-      <p class="textbox-help-link">
-        <a href='{{ help_link }}'>{{ help_link_text }}</a>
-      </p>
-    {% endif %}
+{% block page_title %}Sample page - Flask prototyping{% endblock %}
+
+{% block main_content %}
+
+  <h1 class="heading-xlarge page-title">Create an account</h1>
+
+  <div class="authenticated-box">
+    <h3 class="heading-medium">Your email is eligible for a Notify account</h3>
+    <div class="grid-row authenticated-details">
+      <div class="column-three-quarters">
+        <dl class="definition-inline">
+          <dt>Email</dt>
+          <dd>{{form.email_address.data}}</dd>
+        </dl>
+      </div>
+      <div class="column-quarter">
+        <div class="tick-icon">&#10004;</div>
+      </div>
+    </div>
   </div>
-{% endmacro %}
 
-{% block page_title %}
-Create an account – GOV.UK Notify
-{% endblock %}
-
-{% block maincolumn_content %}
-
-<div class="grid-row">
-  <div class="column-two-thirds">
-    <h1 class="heading-large">Complete your account</h1>
-    <form method="post" autocomplete="nope">
-      {{ textbox(form.email_address, hint="Must be from a central government organisation", width='3-4', safe_error_message=True, readonly=form.email_address.disabled) }}
-      {{ textbox(form.name, width='3-4') }}
-      {{ textbox(form.mobile_number, width='3-4', hint='Used to send test messages while setting up your service') }}
-      {# {{ textbox(form.password, hint="At least 10 characters", width='3-4') }} #}
-      {{ page_footer("Continue") }}
-    </form>
+  <div class="panel">
+    <p class="text">You have been authenticated and are eligible for a Notify account. Please provide a couple of details to complete the registration.</p>
   </div>
-</div>
 
+  <h2 class="heading-medium">Additional information details</h2>
+  <form method="post" class="form" autocomplete="no">
+    <input type="hidden" name="email_address" id="email_address" value="{{form.email_address.data}}">
+    <div class="form-group">
+      <label class="form-label" for="full-name">Full name</label>
+      <input class="form-control" name="full-name" type="text" id="full-name">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="work-email">Mobile number
+        <span class="form-hint">We'll send you a text message as a test</span>
+      </label>
+      <input class="form-control" name="work-email" type="text" id="work-email">
+    </div>
+    <div class="form-group">
+      <button class="button">Continue</button>
+    </div>
+  </form>
+
+</main>
 {% endblock %}

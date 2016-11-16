@@ -48,7 +48,7 @@ def ags_register():
 
     if not ags_authenticated():
         set_next_url(request.full_path)
-        return redirect(url_for('main.sign_in'))
+        return redirect(url_for('main.ags_sign_in'))
 
     return registration_form()
 
@@ -144,7 +144,6 @@ def registration_form():
     del form.password
 
     auth_data = session.get('auth_data', request.environ.get('auth_data', {}))
-    auth_data = json.loads(auth_data)
 
     prepopulate(form.name, auth_data['id_token'].get('name'))
     prepopulate(form.email_address, auth_data['id_token'].get('email'))
