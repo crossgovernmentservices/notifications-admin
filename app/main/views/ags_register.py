@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from functools import wraps
-import json
 
 from flask import (
     abort,
@@ -36,20 +35,27 @@ def ags_register():
         return redirect_to_services()
 
     if registration_form_submitted():
+        current_app.logger.debug('REGISTRATION FORM SUBMITTED')
         user = register_user()
+        current_app.logger.debug('USER REGISTERED')
         add_user_to_session(user)
+        current_app.logger.debug('USER ADDED TO SESSION')
 
         try:
             login_user(activated(user))
+            current_app.logger.debug('USER LOGGED IN')
             return redirect(url_for('main.add_service', first='first'))
 
         finally:
             del session['user_details']
 
     if not ags_authenticated():
+        current_app.logger.debug('NOT AUTHENTICATED')
         set_next_url(request.full_path)
+        current_app.logger.debug('SET NEXT_URL TO {}'.format(request.full_path))
         return redirect(url_for('main.ags_sign_in'))
 
+    current_app.logger.debug('DISPLAYING REGISTER FORM')
     return registration_form()
 
 
