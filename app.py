@@ -1,5 +1,4 @@
 import os
-from flask_assets import ManageAssets
 from flask.ext.script import Manager, Server
 from app import create_app
 
@@ -8,7 +7,6 @@ application = create_app()
 manager = Manager(application)
 port = int(os.environ.get('PORT', 6012))
 manager.add_command("runserver", Server(host='0.0.0.0', port=port))
-manager.add_command('assets', ManageAssets())
 
 
 @manager.command
