@@ -6,6 +6,7 @@ from flask_assets import Bundle, Environment
 
 from lib.sass_filter import LibSass
 
+
 def static(*path):
     return os.path.join(os.path.dirname(__file__), 'static', *path)
 
