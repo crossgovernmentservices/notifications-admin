@@ -73,3 +73,5 @@ environment.sh
 .envrc
 
 app/version.py
+
+wheelhouse/
