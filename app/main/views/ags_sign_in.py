@@ -28,7 +28,7 @@ def ags_sign_in():
         flash('Not authenticated')
         abort(403)
 
-    current_app.logger.debug('AUTH DATA:', auth_data)
+    current_app.logger.debug('AUTH DATA:{},{}'.format(datetime.datetime.now(), auth_data))
 
     user = get_user(auth_data['id_token']['email'])
 
