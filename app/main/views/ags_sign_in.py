@@ -32,8 +32,6 @@ def ags_sign_in():
 
     user = get_user(auth_data['id_token']['email'])
 
-    current_app.logger.debug('USER:', user)
-
     if not user:
         session['auth_data'] = serialize_auth_data(auth_data)
         return redirect(url_for('main.ags_register'))
