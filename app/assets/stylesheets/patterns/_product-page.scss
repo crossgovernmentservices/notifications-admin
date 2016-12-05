@@ -1,6 +1,6 @@
 .product-style {
   background-color: #005EA5;
-  color: $page-colour;
+  color: #ffffff;
   margin-top: -10px;
   width: 100%;
   height: 570px;
@@ -19,7 +19,7 @@
   }
 
   a.button-start {
-    background-color: $page-colour;
+    background-color: #fff;
     color: #005EA5;
     vertical-align: middle;
     margin-right: 10px;
@@ -27,7 +27,7 @@
 }
 
 .button-hint {
-  margin-top: $gutter;
+    margin-top: 30px;
 }
 
 // from Notify product page

@@ -19,7 +19,7 @@
 }
 
 .search__label {
-  @include core-24;
+  @extend .lede;
   display: block;
   margin-top: -1.25em;
 }
@@ -37,7 +37,7 @@
     border: none;
   }
   .search__submit {
-    background-color: #0B0C0C;
+    background-color: #0b0c0c;
     border: none;
     height: 48px;
   }
