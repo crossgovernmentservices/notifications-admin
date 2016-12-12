@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Sample page - Flask prototyping{% endblock %}
+
+{% block main_content %}
+
+  <h1 class="heading-xlarge page-title">Create an account</h1>
+
+  <div class="authenticated-box">
+    <h3 class="heading-medium">Your email is eligible for a Notify account</h3>
+    <div class="grid-row authenticated-details">
+      <div class="column-three-quarters">
+        <dl class="definition-inline">
+          <dt>Email</dt>
+          <dd>{{form.email_address.data}}</dd>
+        </dl>
+      </div>
+      <div class="column-quarter">
+        <div class="tick-icon">&#10004;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <p class="text">You have been authenticated and are eligible for a Notify account. Please provide a couple of details to complete the registration.</p>
+  </div>
+
+  <h2 class="heading-medium">Additional information details</h2>
+  <form method="post" class="form" autocomplete="no">
+    <input type="hidden" name="email_address" id="email_address" value="{{form.email_address.data}}">
+    <div class="form-group">
+      <label class="form-label" for="name">Full name</label>
+      <input class="form-control" name="name" type="text" id="name">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="mobile_number">Mobile number
+        <span class="form-hint">We'll send you a text message as a test</span>
+      </label>
+      <input class="form-control" name="mobile_number" type="text" id="mobile_number">
+    </div>
+    <div class="form-group">
+      <button class="button">Continue</button>
+    </div>
+  </form>
+
+</main>
+{% endblock %}

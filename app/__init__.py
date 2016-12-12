@@ -361,12 +361,14 @@ def load_service_before_request():
         else session.get('service_id')
     from flask.globals import _request_ctx_stack
     if _request_ctx_stack.top is not None:
-        _request_ctx_stack.top.service = service_api_client.get_service(service_id)['data'] if service_id else None
+        _request_ctx_stack.top.service = service_api_client.get_service(
+            service_id)['data'] if service_id else None
 
 
 def save_service_after_request(response):
     # Only save the current session if the request is 200
-    service_id = request.view_args.get('service_id', None) if request.view_args else None
+    service_id = request.view_args.get(
+        'service_id', None) if request.view_args else None
     if response.status_code == 200 and service_id:
         session['service_id'] = service_id
     return response
@@ -394,7 +396,8 @@ def useful_headers_after_request(response):
 def register_errorhandlers(application):
     def _error_response(error_code):
         application.logger.exception('Admin app errored with %s', error_code)
-        resp = make_response(render_template("error/{0}.html".format(error_code)), error_code)
+        resp = make_response(render_template(
+            "error/{0}.html".format(error_code)), error_code)
         return useful_headers_after_request(resp)
 
     @application.errorhandler(HTTPError)

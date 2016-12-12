@@ -82,7 +82,9 @@ gulp.task('javascripts', () => gulp
 );
 
 gulp.task('sass', () => gulp
-  .src(paths.src + '/stylesheets/main*.scss')
+  .src([
+    paths.src + '/stylesheets/main*.scss',
+    paths.src + '/stylesheets/govuk.scss'])
   .pipe(plugins.sass({
     outputStyle: 'compressed',
     includePaths: [
@@ -94,6 +96,27 @@ gulp.task('sass', () => gulp
   .pipe(gulp.dest(paths.dist + 'stylesheets/'))
 );
 
+
+// Copy govuk_elements
+
+gulp.task('govuk_elements', () => gulp
+  .src(paths.src + 'govuk_elements/**/*')
+  .pipe(gulp.dest(paths.dist + 'govuk_elements/'))
+);
+
+// Copy govuk_frontend_toolkit
+
+gulp.task('govuk_frontend_toolkit', () => gulp
+  .src(paths.src + 'govuk_frontend_toolkit/**/*')
+  .pipe(gulp.dest(paths.dist + 'govuk_frontend_toolkit/'))
+);
+
+// Copy js
+
+gulp.task('js', () => gulp
+  .src(paths.src + 'js/**/*')
+  .pipe(gulp.dest(paths.dist + 'js/'))
+);
 
 // Copy images
 
@@ -123,6 +146,7 @@ gulp.task('lint:sass', () => gulp
   .src([
     paths.src + 'stylesheets/*.scss',
     paths.src + 'stylesheets/components/*.scss',
+    paths.src + 'stylesheets/patterns/*.scss',
     paths.src + 'stylesheets/views/*.scss',
   ])
     .pipe(plugins.sassLint())
@@ -151,6 +175,9 @@ gulp.task('default',
     'copy:govuk_template:error_page',
     'javascripts',
     'sass',
+    'govuk_elements',
+    'govuk_frontend_toolkit',
+    'js',
     'images'
   ]
 );

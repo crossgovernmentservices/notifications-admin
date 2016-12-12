@@ -1,0 +1,70 @@
+{#
+govuk_template.html defines the following blocks:
+
+- top_of_page
+- page_title
+- head
+- body_classes
+- body_start
+- cookie_message
+- header_class
+- inside_header
+- proposition_header
+- after_header
+- content
+- footer_top
+- footer_support_links
+- body_end
+
+See https://github.com/alphagov/govuk_template for more
+information regarding the template.
+
+#}
+
+{% extends "govuk_template/views/layouts/govuk_template.html" %}
+
+{% block head %}
+
+  <!-- use compiled govuk.css from the template -->
+  <link rel="stylesheet" href="{{ asset_path }}stylesheets/govuk-template.css">
+
+  <link rel="stylesheet" href="{{ asset_path }}stylesheets/govuk.css">
+
+{% endblock %}
+
+<!-- example of how you add propositional heading -->
+{% block header_class %}with-proposition{% endblock %}
+{% block proposition_header %}
+<div class='header-proposition'>
+  <div class='content'>
+    <nav id='proposition-menu'>
+      <ul id="proposition-links" class="right-aligned">
+        <li><a href="{{url_for('.ags_sign_in')}}">Sign in</a></li>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="{{url_for('.pre_register')}}">Get started</a></li>
+        <li><a href="#" class="active">About</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+{% endblock %}
+
+<!-- can remove banner by directly setting content block in template -->
+{% block content %}
+  <main id="content" role="main">
+    <div class="phase-banner-alpha">
+      <p>
+        <strong class="phase-tag">ALPHA</strong>
+        <span>You can help us improve this app by getting in touch and providing feedback.</span>
+      </p>
+    </div>
+    {% block main_content %}{% endblock %}
+  </main>
+{% endblock %}
+
+{% block body_end %}
+
+  {# js scripts here #}
+  {% include 'includes/scripts.html' %}
+
+{% endblock %}
