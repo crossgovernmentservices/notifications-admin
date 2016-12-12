@@ -20,6 +20,7 @@ from app.main.views.two_factor import _is_safe_redirect_url
 def ags_sign_in():
 
     if not feature_switch_active():
+        current_app.logger.info('Feature switch not active')
         return redirect(url_for('main.sign_in'))
 
     auth_data = request.environ.get('auth_data')
@@ -28,7 +29,7 @@ def ags_sign_in():
         flash('Not authenticated')
         abort(403)
 
-    current_app.logger.debug('AUTH DATA:{},{}'.format(datetime.datetime.now(), auth_data))
+    print('Auth data: {}'.format(auth_data))
 
     user = get_user(auth_data['id_token']['email'])
 
@@ -60,7 +61,11 @@ def accept_invitation():
 
 
 def feature_switch_active():
-    return request.cookies.get('ags_feature_switch_active') == '1'
+    cookie = request.cookies.get('ags_client_active')
+    print('feature flag cookie = {}'.format(
+        cookie))
+
+    return cookie is None or cookie == '1'
 
 
 def get_services(user):
