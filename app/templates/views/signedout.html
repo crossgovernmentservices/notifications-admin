@@ -1,14 +1,16 @@
+{% set global_header_text = "GOV.UK Notify" %}
 {% from 'components/big-number.html' import big_number %}
 {% from "components/banner.html" import banner_wrapper %}
 {% from "components/phone.html" import phone %}
 
 {% extends "fullwidth_template.html" %}
 
-{% block page_title %}
-  GOV.UK Notify
-{% endblock %}
+{% block page_title %}GOV.UK Notify{% endblock %}
 
-{% block maincolumn_content %}
+{% block content %}
+
+<header class="product-style">
+  <div id="content">
 
   <div class="product-page-intro">
     <div class="product-page-intro-wrapper">
@@ -22,10 +24,10 @@
             department or agency.
           </p>
           <div class="button-container">
-            <a class="button button-start" href='{{ url_for('.register' )}}'>
+            <a class="button button-start" href='{{ url_for(.pre_register )}}'>
               Create an account
             </a>
-            or <a href="{{ url_for('.sign_in' )}}">sign in</a> if you’ve used
+            or <a href="{{ url_for('.ags_sign_in' )}}">sign in</a> if you’ve used
             it before
           </div>
         </div>
@@ -119,5 +121,5 @@
     </div>
   </div>
 
-
+</main>
 {% endblock %}

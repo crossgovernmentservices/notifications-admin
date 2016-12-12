@@ -6,6 +6,7 @@ from datetime import (
 from flask import (
     render_template,
     redirect,
+    request,
     session,
     abort,
     url_for
@@ -24,6 +25,11 @@ from app import (
     user_api_client,
     invite_api_client
 )
+
+
+@main.route('/pre-register')
+def pre_register():
+    return render_template('views/pre_register.html')
 
 
 @main.route('/register', methods=['GET', 'POST'])
