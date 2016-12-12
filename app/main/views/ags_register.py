@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from functools import wraps
+import json
 
 from flask import (
     abort,
@@ -35,28 +36,22 @@ def ags_register():
         return redirect_to_services()
 
     if registration_form_submitted():
-        current_app.logger.debug('REGISTRATION FORM SUBMITTED')
         user = register_user()
-        current_app.logger.debug('USER REGISTERED')
         add_user_to_session(user)
-        current_app.logger.debug('USER ADDED TO SESSION')
 
         try:
             login_user(activated(user))
-            current_app.logger.debug('USER LOGGED IN')
             return redirect(url_for('main.add_service', first='first'))
 
         finally:
             del session['user_details']
 
     if not ags_authenticated():
-        current_app.logger.debug('NOT AUTHENTICATED')
         set_next_url(request.full_path)
         current_app.logger.debug(
             'SET NEXT_URL TO {}'.format(request.full_path))
         return redirect(url_for('main.ags_sign_in'))
 
-    current_app.logger.debug('DISPLAYING REGISTER FORM')
     return registration_form()
 
 
@@ -150,11 +145,14 @@ def registration_form():
     form = RegisterUserForm()
     del form.password
 
-    auth_data = session.get('auth_data', request.environ.get('auth_data', {}))
+    if 'auth_data' in session:
+        auth_data = json.loads(session['auth_data'])
+    else:
+        auth_data = request.environ.get('auth_data', {})
 
-    prepopulate(form.name, auth_data['id_token'].get('name'))
-    prepopulate(form.email_address, auth_data['id_token'].get('email'))
-    prepopulate(form.mobile_number, auth_data['id_token'].get('mobile'))
+    prepopulate(form.name, auth_data['userinfo'].get('name'))
+    prepopulate(form.email_address, auth_data['userinfo'].get('email'))
+    prepopulate(form.mobile_number, auth_data['userinfo'].get('mobile'))
 
     return render_template('views/ags_register.html', form=form)
 

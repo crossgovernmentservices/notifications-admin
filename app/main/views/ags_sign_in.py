@@ -32,7 +32,7 @@ def ags_sign_in():
     current_app.logger.debug('AUTH DATA:{},{}'.format(
         datetime.datetime.now(), auth_data))
 
-    user = get_user(auth_data['id_token']['email'])
+    user = get_user(auth_data['userinfo']['email'])
 
     if not user:
         session['auth_data'] = serialize_auth_data(auth_data)
