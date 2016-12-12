@@ -31,7 +31,7 @@ def ags_sign_in():
 
     print('Auth data: {}'.format(auth_data))
 
-    user = get_user(auth_data['id_token']['email'])
+    user = get_user(auth_data['userinfo']['email'])
 
     if not user:
         session['auth_data'] = serialize_auth_data(auth_data)
