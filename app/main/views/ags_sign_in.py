@@ -63,6 +63,15 @@ def accept_invitation():
 
 def feature_switch_active():
     cookie = request.cookies.get('ags_client_active')
+<< << << < HEAD
+== == == =
+<< << << < HEAD
+    print('feature flag cookie = {}'.format(
+        cookie))
+
+== == == =
+>>>>>> > Prepopulate register form with relevant userinfo data
+>>>>>> > Prepopulate register form with relevant userinfo data
     return cookie is None or cookie == '1'
 
 
