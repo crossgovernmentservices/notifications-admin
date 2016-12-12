@@ -29,8 +29,6 @@ def ags_sign_in():
         flash('Not authenticated')
         abort(403)
 
-    print('Auth data: {}'.format(auth_data))
-
     user = get_user(auth_data['userinfo']['email'])
 
     if not user:
@@ -62,9 +60,12 @@ def accept_invitation():
 
 def feature_switch_active():
     cookie = request.cookies.get('ags_client_active')
+<< << << < HEAD
     print('feature flag cookie = {}'.format(
         cookie))
 
+== == == =
+>>>>>> > Prepopulate register form with relevant userinfo data
     return cookie is None or cookie == '1'
 
 
