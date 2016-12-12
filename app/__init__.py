@@ -140,9 +140,6 @@ def create_app():
 
     setup_event_handlers()
 
-    from app.assets import assets
-    assets.init_app(application)
-
     return application
 
 
