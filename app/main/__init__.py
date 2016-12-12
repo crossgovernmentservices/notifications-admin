@@ -5,8 +5,10 @@ main = Blueprint('main', __name__)  # noqa
 from app.main.views import (
     index,
     sign_in,
+    ags_sign_in,
     sign_out,
     register,
+    ags_register,
     two_factor,
     verify,
     send,

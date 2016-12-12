@@ -1,0 +1,179 @@
+// Common place to import all GOV.UK CSS things
+
+@import "../govuk_elements/public/sass/main.scss";
+
+@import "patterns/product-page.scss";
+@import "patterns/search.scss";
+
+$gutter-third: $gutter / 3;
+
+html, body {
+  color: $text-colour;
+  padding: 0;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 19px;
+  background-color: $page-colour;
+  height: 100%;
+  -webkit-text-size-adjust: none; /* Never autoresize text */
+}
+
+.column-three-quarters {
+  @include grid-column(2 / 3);
+}
+
+.confirm-banner {
+  margin: $gutter-half 0;
+  background: $turquoise;
+  color: $page-colour;
+  padding: 6px $gutter-half 4px;
+
+  p {
+    margin: 0;
+  }
+
+  .tick-icon {
+    padding-right: 10px;
+  }
+}
+
+
+// An inline definition list - name:value pairs for example
+/* dd */.definition-inline {
+  @extend %contain-floats;
+  dt {
+    font-weight: bold;
+    clear: left;
+    float: left;
+    margin-right: $gutter-half;
+    &:after {
+      content: ':';
+    }
+  }
+  dd {
+    float: left;
+  }
+}
+
+.cya-section {
+  border-top: 1px solid $border-colour;
+  margin-top: $gutter;
+  padding-top: $gutter-half;
+
+  .heading-medium {
+    margin-top: 0;
+  }
+}
+
+.ta-right {
+  text-align: right;
+}
+
+.index-description {
+  margin-bottom: 1em;
+  font-size: 16px;
+}
+
+
+// tweaking search input for full page width
+.idp-search {
+  padding: 5px;
+  background: $panel-colour;
+  margin-top: $gutter-half;
+
+  .search__submit {
+    top: 5px;
+    right: 5px;
+  }
+}
+
+// search results
+.search-tabs {
+  margin-top: $gutter;
+  ul {
+    border-bottom: 1px solid $border-colour;
+    li {
+      color: $link-colour;
+      display: inline-block;
+      padding: 0 8px 10px;
+      font-size: 16px;
+      &.active {
+        border-bottom: 2px solid $link-colour;
+      }
+      a {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.selection-heading {
+  font-weight: bolder;
+}
+
+.selection-help-text {
+  font-size: 16px;
+  margin: 0.25em 0;
+}
+
+.page-title {
+  margin: 60px 0 30px;
+}
+
+.authenticated-box {
+  background: $turquoise;
+  color: $page-colour;
+  padding: 25px $gutter 20px;
+  margin-bottom: $gutter;
+
+  .tick-icon {
+    text-align: center;
+    margin: auto;
+  }
+  h3 {
+    margin: 0;
+  }
+  .authenticated-details {
+    margin-top: 10px;
+  }
+}
+
+%info-callout {
+  border: 1px solid $border-colour;
+  background: lighten($light-blue, 42%);
+  border-radius: 4px;
+  padding: $gutter-half;
+  margin-bottom: 45px;
+
+  p {
+    margin: 0;
+  }
+
+  .email-given {
+    font-weight: bold;
+    font-size: 24px;
+    margin: $gutter-third 0;
+  }
+}
+
+.email-callout--warning {
+  @extend %info-callout;
+  background: lighten($focus-colour, 25%);
+}
+
+// Notify product page styles
+.bold-p {
+  font-weight: 700;
+}
+
+.team-image img {
+  max-width: 460px;
+  float: right;
+  margin-top: 10px;
+}
+
+#global-header .header-proposition #proposition-links.right-aligned li {
+  float: right;
+  padding: 0 0 0 15px;
+}
