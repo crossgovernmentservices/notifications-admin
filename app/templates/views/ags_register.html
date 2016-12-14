@@ -72,7 +72,7 @@
   </div>
 
   <h2 class="heading-medium">Additional information details</h2>
-  <form method="post" class="form" autocomplete="no">
+  <form action="{{url_for('main.ags_register')}}" method="post" class="form" autocomplete="no">{{form.csrf_token}}
     <input type="hidden" name="email_address" id="email_address" value="{{form.email_address.data}}">
     {{ textbox(form.name, width='3-4') }}
     {{ textbox(form.mobile_number, width='3-4', hint="We'll send you a text message as a test") }}
