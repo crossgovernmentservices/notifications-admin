@@ -3,15 +3,11 @@
 {% from "components/banner.html" import banner_wrapper %}
 {% from "components/phone.html" import phone %}
 
-{% set global_header_text = "GOV.UK Notify" %}
 {% extends "layout_prodpage.html" %}
 
 {% block page_title %}GOV.UK Notify{% endblock %}
 
-{% block content %}
-
-<header class="product-style">
-  <div id="content">
+{% block fullwidth_content %}
 
   <div class="product-page-intro">
     <div class="product-page-intro-wrapper">
@@ -163,6 +159,4 @@
       </div>
     </div>
   </div>
-
-</main>
 {% endblock %}
