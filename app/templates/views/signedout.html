@@ -3,14 +3,11 @@
 {% from "components/banner.html" import banner_wrapper %}
 {% from "components/phone.html" import phone %}
 
-{% extends "fullwidth_template.html" %}
+{% extends "layout_prodpage.html" %}
 
 {% block page_title %}GOV.UK Notify{% endblock %}
 
-{% block content %}
-
-<header class="product-style">
-  <div id="content">
+{% block fullwidth_content %}
 
   <div class="product-page-intro">
     <div class="product-page-intro-wrapper">
@@ -24,7 +21,7 @@
             department or agency.
           </p>
           <div class="button-container">
-            <a class="button button-start" href='{{ url_for(.pre_register )}}'>
+            <a class="button button-start" href='{{ url_for('.pre_register' )}}'>
               Create an account
             </a>
             or <a href="{{ url_for('.ags_sign_in' )}}">sign in</a> if you’ve used
@@ -97,7 +94,49 @@
       </div>
     </div>
   </div>
-  <div class="product-page-section bottom-gutter-2">
+  <div class="product-page-section">
+    <div class="with-keyline bottom-gutter-2">
+      <h2>Who’s using GOV.UK Notify</h2>
+      <div class="grid-row bottom-gutter">
+        <div class="column-half">
+          <h3 class="visually-hidden">Services</h3>
+          <div class="product-page-big-number">23</div>
+          services
+        </div>
+        <div class="column-half">
+          <h3 class="visually-hidden">Departments</h3>
+          <div class="product-page-big-number">14</div>
+          departments
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="product-page-section">
+    <div class="with-keyline bottom-gutter-2">
+      <h2>Pricing</h2>
+      <div class="grid-row bottom-gutter">
+        <div class="column-half">
+          <h3 class="visually-hidden">Emails</h3>
+          <div class="product-page-big-number">Unlimited</div>
+          free emails
+        </div>
+        <div class="column-half">
+          <h3 class="visually-hidden">Text messages</h3>
+          <div class="product-page-big-number">250,000</div>
+          free text messages a year, then
+          1.65 pence per message
+        </div>
+      </div>
+      <div class="grid-row bottom-gutter">
+        <div class="column-three-quarters">
+          <p>
+            There’s no monthly charge, no setup fee and no procurement process.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="product-page-section">
     <div class="grid-row">
       <div class="column-half">
         <h2 class="with-keyline">
@@ -120,6 +159,4 @@
       </div>
     </div>
   </div>
-
-</main>
 {% endblock %}

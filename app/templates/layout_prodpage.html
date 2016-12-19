@@ -30,6 +30,33 @@ information regarding the template.
 
   <link rel="stylesheet" href="{{ asset_path }}stylesheets/govuk.css">
 
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" media="screen" href="{{ asset_url('stylesheets/main.css') }}" />
+  <!--<![endif]-->
+  <style>
+      #global-header-bar { background-color: {{header_colour}} }
+  </style>
+  <!--[if IE 6]>
+  <link rel="stylesheet" media="screen" href="{{ asset_url('stylesheets/main-ie6.css') }}" />
+  <![endif]-->
+  <!--[if IE 7]>
+  <link rel="stylesheet" media="screen" href="{{ asset_url('stylesheets/main-ie7.css') }}" />
+  <![endif]-->
+  <!--[if IE 8]>
+  <link rel="stylesheet" media="screen" href="{{ asset_url('stylesheets/main-ie8.css') }}" />
+  <![endif]-->
+
+{% endblock %}
+
+{% block page_title %}
+  GOV.UK Notify admin
+{% endblock %}
+
+{% block cookie_message %}
+  <p>
+    GOV.UK Notify uses cookies to make the site simpler.
+    <a href="{{ url_for("main.cookies") }}">Find out more about cookies</a>
+  </p>
 {% endblock %}
 
 <!-- example of how you add propositional heading -->
@@ -51,14 +78,14 @@ information regarding the template.
 
 <!-- can remove banner by directly setting content block in template -->
 {% block content %}
-  <main id="content" role="main">
-    <div class="phase-banner-alpha">
+  <main role="main">
+    <div class="phase-banner-alpha" style="margin:0 auto;max-width:960px;">
       <p>
         <strong class="phase-tag">ALPHA</strong>
         <span>You can help us improve this app by getting in touch and providing feedback.</span>
       </p>
     </div>
-    {% block main_content %}{% endblock %}
+    {% block fullwidth_content %}{% endblock %}
   </main>
 {% endblock %}
 
