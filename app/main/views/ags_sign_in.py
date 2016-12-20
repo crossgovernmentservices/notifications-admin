@@ -29,9 +29,12 @@ def ags_sign_in():
         flash('Not authenticated')
         abort(403)
 
+<< << << < HEAD
     current_app.logger.debug('AUTH DATA:{},{}'.format(
         datetime.datetime.now(), auth_data))
 
+== == == =
+>>>>>> > f85d6c26a7534890ba7f78fc48cc5ccccc00346a
     user = get_user(auth_data['userinfo']['email'])
 
     if not user:
@@ -63,8 +66,6 @@ def accept_invitation():
 
 def feature_switch_active():
     cookie = request.cookies.get('ags_client_active')
-
-    print("feature_switch:{}".format(cookie))
     return cookie is None or cookie == '1'
 
 

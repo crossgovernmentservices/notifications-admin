@@ -48,8 +48,6 @@ def ags_register():
 
     if not ags_authenticated():
         set_next_url(request.full_path)
-        current_app.logger.debug(
-            'SET NEXT_URL TO {}'.format(request.full_path))
         return redirect(url_for('main.ags_sign_in'))
 
     return registration_form()
