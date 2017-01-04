@@ -5,12 +5,14 @@ import json
 from flask import (
     abort,
     current_app,
+    flash,
     redirect,
     render_template,
     request,
     session,
     url_for)
 from flask_login import current_user, login_fresh, login_user
+from notifications_python_client.errors import APIError
 
 from app import user_api_client
 from app.main import main
@@ -18,12 +20,17 @@ from app.main.forms import RegisterUserForm
 from app.main.views.ags_sign_in import (
     accept_invitation,
     feature_switch_active,
+    get_user,
     has_invitation,
     is_invitee,
     redirect_to_services)
 
 
 DEFAULT_PASSWORD = 'ags_default_password'
+
+
+class UserExists(Exception):
+    pass
 
 
 @main.route('/ags-register', methods=['GET', 'POST'])
@@ -146,11 +153,21 @@ def prepopulate(field, value):
 
 @default_current_user
 def register_user(user):
-    return user_api_client.register_user(
-        user.name,
-        user.email_address,
-        user.mobile_number,
-        DEFAULT_PASSWORD)
+
+    try:
+        return user_api_client.register_user(
+            user.name,
+            user.email_address,
+            user.mobile_number,
+            DEFAULT_PASSWORD)
+
+    except APIError:
+
+        if get_user(user.email_address):
+            print('User already registered: {}'.format(user.email_address))
+            raise UserExists()
+
+        raise
 
 
 def registration_form():
