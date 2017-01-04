@@ -48,7 +48,9 @@ def ags_register():
         flash('Not authenticated')
         abort(403)
 
-    user = get_user(auth_data['userinfo']['email'])
+    user = None
+    if 'email' in auth_data['userinfo']:
+        user = get_user(auth_data['userinfo']['email'])
 
     if user:
         login_user(user, remember=True)
