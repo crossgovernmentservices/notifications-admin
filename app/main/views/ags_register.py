@@ -35,6 +35,20 @@ def ags_register():
     if current_user.is_authenticated:
         return redirect_to_services()
 
+    auth_data = request.environ.get('auth_data')
+
+    if auth_data is None:
+        flash('Not authenticated')
+        abort(403)
+
+    user = None
+    if 'email' in auth_data['userinfo']:
+        user = get_user(auth_data['userinfo']['email'])
+
+    if user:
+        login_user(user, remember=True)
+        return redirect_to_services()
+
     if registration_form_submitted():
         user = register_user()
         add_user_to_session(user)

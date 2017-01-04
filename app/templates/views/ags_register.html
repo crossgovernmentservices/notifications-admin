@@ -52,6 +52,7 @@
 
   <h1 class="heading-xlarge page-title">Create an account</h1>
 
+  {% if form.email_address.data %}
   <div class="authenticated-box">
     <h3 class="heading-medium">Your email is eligible for a Notify account</h3>
     <div class="grid-row authenticated-details">
@@ -66,14 +67,26 @@
       </div>
     </div>
   </div>
+  {% endif %}
 
   <div class="panel">
     <p class="text">You have been authenticated and are eligible for a Notify account. Please provide a couple of details to complete the registration.</p>
   </div>
 
   <h2 class="heading-medium">Additional information details</h2>
+  {% if form.errors %}
+  <div class="error-message">
+    {% for error in form.errors %}
+    <p>{{ error }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
   <form action="{{url_for('main.ags_register')}}" method="post" class="form" autocomplete="no">{{form.csrf_token}}
+    {% if form.email_address.data %}
     <input type="hidden" name="email_address" id="email_address" value="{{form.email_address.data}}">
+    {% else %}
+    {{ textbox(form.email_address, width='3-4') }}
+    {% endif %}
     {{ textbox(form.name, width='3-4') }}
     {{ textbox(form.mobile_number, width='3-4', hint="We'll send you a text message as a test") }}
     <div class="form-group">
