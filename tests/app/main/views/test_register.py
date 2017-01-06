@@ -169,12 +169,15 @@ def test_ags_register_creates_new_user_and_redirects_to_add_service_page(
 
     user_data = {'name': 'Some One Valid',
                  'email_address': email_id,
-                 'mobile_number': '+4407700900460',
-                 'password': 'validPassword!'
+                 'mobile_number': '+4407700900460'
                  }
 
+    auth_data = {'auth_data': {'userinfo': {'email': email_id}}}
+
     with app_.test_request_context():
-        response = app_.test_client().post(url_for('main.ags_register'), data=user_data)
+        response = app_.test_client().post(url_for('main.ags_register'), data=user_data,
+                                           environ_base=auth_data)
+
         assert response.status_code == 302
         assert response.location == url_for(
             'main.add_service', first='first', _external=True)
