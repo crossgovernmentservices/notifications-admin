@@ -32,3 +32,5 @@ make generate-version-file
 pip3 install -r requirements_for_test.txt
 
 npm install && npm run build
+
+./scripts/get_selenium_drivers.sh
