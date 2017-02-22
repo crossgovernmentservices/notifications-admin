@@ -1,0 +1,36 @@
+{% extends "withoutnav_template.html" %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block page_title %}
+Create an account – GOV.UK Notify
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ asset_path }}stylesheets/govuk.css">
+{% endblock %}
+
+{% block maincolumn_content %}
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <h1 class="heading-large">Create an account</h1>
+
+    <div class="text">
+      <p class="lede">We need to check that you have a government email address before you start to use GOV.UK Notify.</p>
+
+      <p>Once checked Notify will use the basic profile information from your work email to create your account.</p>
+
+      <p class="panel">To sign into Notify in the future you will need access to your work email.</p>
+    </div>
+
+    <a class="button" href="{{ url_for('.ags_register') }}">Continue</a>
+
+    <hr />
+
+    <h3 class="heading-medium">or</h3>
+
+    <p><a href="{{url_for('.ags_sign_in')}}"> sign in</a> if you've already got an account</p>
+  </div>
+</div>
+{% endblock %}

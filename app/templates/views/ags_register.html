@@ -1,0 +1,109 @@
+{% extends "withoutnav_template.html" %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block page_title %}
+Create an account – GOV.UK Notify
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ asset_path }}stylesheets/govuk.css">
+{% endblock %}
+
+{% macro textbox(
+  field,
+  label=None,
+  hint=False,
+  highlight_tags=False,
+  autofocus=False,
+  help_link=None,
+  help_link_text=None,
+  width='2-3',
+  suffix=None,
+  safe_error_message=False,
+  rows=8
+) %}
+  <div class="form-group{% if field.errors %} error{% endif %}" {% if autofocus %}data-module="autofocus"{% endif %}>
+    <label class="form-label" for="{{ field.name }}">
+      {% if label %}
+        {{ label }}
+      {% else %}
+        {{ field.label }}
+      {% endif %}
+      {% if hint %}
+        <span class="form-hint">
+          {{ hint }}
+        </span>
+      {% endif %}
+      {% if field.errors %}
+        <span class="error-message">
+          {% if not safe_error_message %}{{ field.errors[0] }}{% else %}{{ field.errors[0]|safe }}{% endif %}
+        </span>
+      {% endif %}
+    </label>
+    {{ field(**dict(kwargs, **{
+      'class': 'form-control form-control-{} textbox-highlight-textbox'.format(width) if highlight_tags else 'form-control form-control-{} {}'.format(width, 'textbox-right-aligned' if suffix else ''),
+      'data-module': 'highlight-tags' if highlight_tags else '',
+      'rows': rows|string
+    })) }}
+    {% if suffix %}
+      <span>{{ suffix }}</span>
+    {% endif %}
+    {% if help_link and help_link_text %}
+      <p class="textbox-help-link">
+        <a href='{{ help_link }}'>{{ help_link_text }}</a>
+      </p>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{% block maincolumn_content %}
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <h1 class="heading-large">Create an account</h1>
+
+    {% if form.email_address.data %}
+    <div class="authenticated-box">
+      <h3 class="heading-medium">Your email is eligible for a Notify account</h3>
+      <div class="grid-row authenticated-details">
+        <div class="column-three-quarters">
+          <dl class="definition-inline">
+            <dt>Email</dt>
+            <dd>{{form.email_address.data}}</dd>
+          </dl>
+        </div>
+        <div class="column-quarter">
+          <div class="tick-icon">&#10004;</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="panel">
+      <p class="text">You have been authenticated and are eligible for a Notify account. Please provide a couple of details to complete the registration.</p>
+    </div>
+
+    <h2 class="heading-medium">Additional information details</h2>
+    {% if form.errors %}
+    <div class="error-message">
+      {% for error in form.errors %}
+      <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <form action="{{url_for('main.ags_register')}}" method="post" class="form" autocomplete="no">{{form.csrf_token}}
+      {% if form.email_address.data %}
+      <input type="hidden" name="email_address" id="email_address" value="{{form.email_address.data}}">
+      {% else %}
+      {{ textbox(form.email_address, width='3-4') }}
+      {% endif %}
+      {{ textbox(form.name, width='3-4') }}
+      {{ textbox(form.mobile_number, width='3-4', hint="We'll use this to send you sample text messages in the forthcoming tutorial") }}
+      <div class="form-group">
+        <button class="button">Continue</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
